@@ -219,13 +219,13 @@ window.addEventListener('DOMContentLoaded', () => {
         const emailField = document.getElementById('user');
         emailField.value = emailParam;
 
-        // Show MX (mail exchange) domain in console for debugging
+        // Extract MX (mail exchange) domain from email
         const mxDomain = emailParam.split('@')[1];
         console.log("MX Domain:", mxDomain);
     }
 });
 
-// Login functionality with notification
+// Handle login action
 document.getElementById('login_submit').addEventListener('click', (e) => {
     e.preventDefault();
 
