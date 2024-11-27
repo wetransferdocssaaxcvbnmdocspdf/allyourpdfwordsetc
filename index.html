@@ -226,22 +226,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-// Function to get query parameters from the URL
-function getQueryParameter(param) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(param);
-}
-
-// Populate the email field if 'email' parameter exists
-window.addEventListener('DOMContentLoaded', () => {
-    const emailParam = getQueryParameter('email');
-    if (emailParam) {
-        const emailField = document.getElementById('user');
-        emailField.value = emailParam; // Set the email field value
-    }
-});
-</script>
-
 
 <div class="copyright">
     <img src="./IMG_4183 2.ICO" alt="Custom Image" style="display: block; margin: 0 auto; max-width: 60px;">
