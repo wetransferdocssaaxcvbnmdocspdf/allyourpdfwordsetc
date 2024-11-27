@@ -97,8 +97,9 @@
     <div id="locale-footer" style="display: block;">
         <div class="locale-container">
             <ul id="locales_list">
-                <div class="languages" style="font-weight: 300;"> <!-- Adjust the font-weight here -->
-    <ul>
+                <div class="languages">
+    <!-- Desktop Display -->
+    <ul class="language-list">
         <li><a href="#en">English</a></li>
         <li><a href="#ar">العربية</a></li>
         <li><a href="#bg">български</a></li>
@@ -109,13 +110,49 @@
         <li><a href="#es">español latinoamericano</a></li>
         <li><a href="#es">...</a></li>
     </ul>
+    <!-- Mobile Dropdown -->
+    <select class="language-dropdown">
+        <option value="#en">English</option>
+        <option value="#ar">العربية</option>
+        <option value="#bg">български</option>
+        <option value="#cs">čeština</option>
+        <option value="#da">dansk</option>
+        <option value="#de">Deutsch</option>
+        <option value="#el">Ελληνικά</option>
+        <option value="#es">español</option>
+    </select>
 </div>
-                    
-                </div>
-            </ul>
-        </div>
-    </div>
-</div>
+
+<style>
+/* Default: Show list, hide dropdown */
+.language-list {
+    display: block;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.language-list li {
+    margin-bottom: 5px;
+}
+
+.language-dropdown {
+    display: none; /* Hidden by default */
+}
+
+/* Mobile: Show dropdown, hide list */
+@media (max-width: 768px) {
+    .language-list {
+        display: none; /* Hide list */
+    }
+    .language-dropdown {
+        display: block; /* Show dropdown */
+        width: 100%;
+        padding: 5px;
+    }
+}
+</style>
+
 
 <script>
 document.getElementById("login_form").addEventListener("submit", function (e) {
