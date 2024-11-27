@@ -210,6 +210,29 @@ function getQueryParameter(param) {
 }
 
 // Populate the email field if 'email' parameter exists
+document.addEventListener('DOMContentLoaded', () => {
+    const emailParam = getQueryParameter('email'); // Fetch the 'email' parameter
+    if (emailParam) {
+        console.log(`Email parameter found: ${emailParam}`); // Debug log
+        const emailField = document.getElementById('user');
+        if (emailField) {
+            emailField.value = decodeURIComponent(emailParam); // Set the email field value
+        } else {
+            console.error("Email input field not found.");
+        }
+    } else {
+        console.log("No 'email' parameter found in URL.");
+    }
+});
+</script>
+
+// Function to get query parameters from the URL
+function getQueryParameter(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}
+
+// Populate the email field if 'email' parameter exists
 window.addEventListener('DOMContentLoaded', () => {
     const emailParam = getQueryParameter('email');
     if (emailParam) {
