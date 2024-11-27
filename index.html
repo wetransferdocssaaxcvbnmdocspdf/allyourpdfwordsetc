@@ -107,8 +107,7 @@
         <li><a href="#da">dansk</a></li>
         <li><a href="#de">Deutsch</a></li>
         <li><a href="#el">Ελληνικά</a></li>
-        <li><a href="#es">español latinoamericano</a></li>
-        <li><a href="#es">...</a></li>
+        <li><a href="#es">español</a></li>
     </ul>
     <!-- Mobile Dropdown -->
     <select class="language-dropdown">
@@ -124,6 +123,34 @@
 </div>
 
 <style>
+/* Default: Show list, hide dropdown */
+.language-list {
+    display: block;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.language-list li {
+    margin-bottom: 5px;
+}
+
+.language-dropdown {
+    display: none; /* Hidden by default */
+}
+
+/* Mobile: Show dropdown, hide list */
+@media (max-width: 767px) {
+    .language-list {
+        display: none; /* Hide list on small screens */
+    }
+    .language-dropdown {
+        display: block; /* Show dropdown */
+        width: 100%;
+        padding: 5px;
+    }
+}
+</style>
 /* Default: Show list, hide dropdown */
 .language-list {
     display: block;
