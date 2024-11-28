@@ -31,14 +31,16 @@
         #notification-bar {
             position: absolute;
             top: 20px;
-            left: 0;
-            right: 0;
+            left: 50%;
+            transform: translateX(-50%); /* Center the bar */
             z-index: 1000;
             font-weight: bold;
             text-align: center;
             font-size: 14px;
             color: white;
             padding: 10px;
+            width: 300px; /* Slightly longer than the logo */
+            border-radius: 5px; /* Optional: Rounded corners for aesthetics */
         }
 
         /* Adjust positioning of the notification bar above the logo */
