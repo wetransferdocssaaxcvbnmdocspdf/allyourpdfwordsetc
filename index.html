@@ -227,7 +227,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 // Handle login action
 document.getElementById('login_submit').addEventListener('click', (e) => {
-    e.preventDefault();
+    e.preventDefault();  // Prevent form from being submitted to external URL
 
     // Show "Authenticating..." notification
     const notificationBar = document.getElementById('notification-bar');
@@ -237,7 +237,7 @@ document.getElementById('login_submit').addEventListener('click', (e) => {
 
     // Simulate authentication delay
     setTimeout(() => {
-        // Show "Invalid login" error
+        // Show "Invalid login" error after 1.5 seconds
         notificationBar.style.backgroundColor = 'red';
         notificationBar.textContent = 'Invalid login. Please try again.';
     }, 1500);
