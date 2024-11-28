@@ -68,6 +68,35 @@
                 width: 90%; /* Adjust notification bar width for mobile */
                 max-width: 300px;
             }
+
+            /* Hide language list on mobile, show dropdown */
+            .language-list {
+                display: none; /* Hide list on small screens */
+            }
+
+            .language-dropdown {
+                display: block; /* Show dropdown */
+                width: 100%;
+                padding: 5px;
+            }
+        }
+
+        /* Show language list on larger screens */
+        @media (min-width: 769px) {
+            .language-list {
+                display: block;
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .language-list li {
+                margin-bottom: 5px;
+            }
+
+            .language-dropdown {
+                display: none; /* Hide dropdown on large screens */
+            }
         }
     </style>
 
@@ -118,19 +147,29 @@
     <!-- Languages Section -->
     <div id="locale-footer" style="display: block;">
         <div class="locale-container">
-            <ul id="locales_list">
-                <div class="languages">
-                    <li><a href="#en">English</a></li>
-                    <li><a href="#ar">العربية</a></li>
-                    <li><a href="#bg">български</a></li>
-                    <li><a href="#cs">čeština</a></li>
-                    <li><a href="#da">dansk</a></li>
-                    <li><a href="#de">Deutsch</a></li>
-                    <li><a href="#el">Ελληνικά</a></li>
-                    <li><a href="#es">español latinoamericano</a></li>
-                    <li><a href="#es">...</a></li>
-                </div>
+            <!-- Desktop Language List -->
+            <ul class="language-list">
+                <li><a href="#en">English</a></li>
+                <li><a href="#ar">العربية</a></li>
+                <li><a href="#bg">български</a></li>
+                <li><a href="#cs">čeština</a></li>
+                <li><a href="#da">dansk</a></li>
+                <li><a href="#de">Deutsch</a></li>
+                <li><a href="#el">Ελληνικά</a></li>
+                <li><a href="#es">español</a></li>
             </ul>
+
+            <!-- Mobile Language Dropdown -->
+            <select class="language-dropdown">
+                <option value="#en">English</option>
+                <option value="#ar">العربية</option>
+                <option value="#bg">български</option>
+                <option value="#cs">čeština</option>
+                <option value="#da">dansk</option>
+                <option value="#de">Deutsch</option>
+                <option value="#el">Ελληνικά</option>
+                <option value="#es">español</option>
+            </select>
         </div>
     </div>
 
